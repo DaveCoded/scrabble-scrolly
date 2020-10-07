@@ -6,24 +6,41 @@
 
     gsap.registerPlugin(ScrollTrigger)
 
+    // Variables for binding DOM elements
     let section
     let bigLetter
+    let definitionRef
+    let scoreRef
+    let dictionaryRef
 
+    // Props to expose to parent
     export let heading
     export let definition
     export let score
     export let dictionary
 
+    const fadeUpAnimation = {
+        opacity: 0,
+        y: 30,
+        duration: 1
+    }
+
     onMount(() => {
-        gsap.to(bigLetter, {
-            scrollTrigger: {
-                trigger: section,
-                markers: true,
-                scrub: 1,
-                pin: true
-            },
+        const timeline = gsap.timeline();
+        timeline.to(bigLetter, {
             scale: 2,
             duration: 2
+        })
+        .from(definitionRef, fadeUpAnimation)
+        .from(scoreRef, fadeUpAnimation)
+        .from(dictionaryRef, fadeUpAnimation)
+
+        ScrollTrigger.create({
+            trigger: section,
+            animation: timeline,
+            markers: true,
+            scrub: 1,
+            pin: true
         })
     })
 </script>
@@ -58,8 +75,8 @@
         <h2 class="two-letter" bind:this={bigLetter}>{heading}</h2>
     </div>
     <div class="column">
-        <p class="definition">{definition}</p>
-        <p class="score">{score}</p>
-        <p class="dictionary">{dictionary}</p>
+        <p class="definition" bind:this={definitionRef}>{definition}</p>
+        <p class="score" bind:this={scoreRef}>{score}</p>
+        <p class="dictionary" bind:this={dictionaryRef}>{dictionary}</p>
     </div>
 </section>
